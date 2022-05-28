@@ -7,5 +7,7 @@ namespace RestApiZaliczenie.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options){
 
         }
+
+        public DbSet<Activity> Activities { get; set; }
     }
 }
