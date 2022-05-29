@@ -10,7 +10,7 @@ using RestApiZaliczenie.Data;
 
 namespace RestApiZaliczenie.Controllers
 {
-    [Route("api/[Activities]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ActivitiesController : ControllerBase
     {
@@ -22,14 +22,14 @@ namespace RestApiZaliczenie.Controllers
         }
 
         // GET: api/Activities
-        [HttpGet]
+        [HttpGet(Name ="GetActivities")]
         public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
         {
             return await _context.Activities.ToListAsync();
         }
 
         // GET: api/Activities/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetActivity")]
         public async Task<ActionResult<Activity>> GetActivity(int id)
         {
             var activity = await _context.Activities.FindAsync(id);
