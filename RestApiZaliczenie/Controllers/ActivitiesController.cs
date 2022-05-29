@@ -52,25 +52,38 @@ namespace RestApiZaliczenie.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(activity).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                _context.Entry(activity).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ActivityExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ActivityExists(id))
+                while (ex.InnerException != null)
                 {
-                    return NotFound();
+                    ex = ex.InnerException;
                 }
-                else
-                {
-                    throw;
-                }
+
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
         }
 
         // POST: api/Activities
@@ -78,26 +91,53 @@ namespace RestApiZaliczenie.Controllers
         [HttpPost]
         public async Task<ActionResult<Activity>> PostActivity(Activity activity)
         {
-            _context.Activities.Add(activity);
-            await _context.SaveChangesAsync();
+            try 
+            {
+                _context.Activities.Add(activity);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetActivity), new { id = activity.Id }, activity);
+                return CreatedAtAction(nameof(GetActivity), new { id = activity.Id }, activity);
+            }
+            catch(Exception ex) 
+            {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         // DELETE: api/Activities/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity(int id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            if (activity == null)
+
+            try
             {
-                return NotFound();
+                var activity = await _context.Activities.FindAsync(id);
+                if (activity == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Activities.Remove(activity);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+
+                return BadRequest(ex.Message);
             }
 
-            _context.Activities.Remove(activity);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool ActivityExists(int id)
