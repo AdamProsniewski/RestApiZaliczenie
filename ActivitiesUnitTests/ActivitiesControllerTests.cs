@@ -5,8 +5,14 @@ using RestApiZaliczenie;
 using RestApiZaliczenie.Controllers;
 using RestApiZaliczenie.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using static System.Uri;
 
 namespace ActivitiesUnitTests
 {
@@ -20,7 +26,7 @@ namespace ActivitiesUnitTests
         }
 
         [Fact]
-        public async Task GetActivity()
+        public async Task GetActivity_GoodRequest_SuccessStatusCode()
         {
             
             using var client = _factory.CreateClient();
@@ -30,6 +36,19 @@ namespace ActivitiesUnitTests
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
+        }
+
+        [Fact]
+        public async Task PostActivity_InvalidKey_BadRequestStatusCode()
+        {
+            
+            using var client = _factory.CreateClient();
+
+
+            var jsonString = "{'nieistnieje':'TestPOSTAction'}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var message = await client.PostAsync("api/Activities", httpContent);
+            Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
         }
     }
 }
