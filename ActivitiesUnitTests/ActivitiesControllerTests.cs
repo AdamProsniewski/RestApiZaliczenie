@@ -50,5 +50,22 @@ namespace ActivitiesUnitTests
             var message = await client.PostAsync("api/Activities", httpContent);
             Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
         }
+
+        [Fact]
+        public async Task PostActivity_GoodRequest_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{\"name\": \"PostRequest\"}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var response = await client.PostAsync("/api/Activities", httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+        }
+
+
     }
 }
