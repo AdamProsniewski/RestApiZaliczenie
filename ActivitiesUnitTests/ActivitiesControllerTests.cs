@@ -28,7 +28,7 @@ namespace ActivitiesUnitTests
         [Fact]
         public async Task GetActivity_GoodRequest_SuccessStatusCode()
         {
-            
+
             using var client = _factory.CreateClient();
 
             // Act
@@ -39,9 +39,22 @@ namespace ActivitiesUnitTests
         }
 
         [Fact]
+        public async Task GetActivity_RequestNotFound_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            // Act
+            var response = await client.GetAsync("/api/Aktywnosci");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
         public async Task PostActivity_InvalidKey_BadRequestStatusCode()
         {
-            
+
             using var client = _factory.CreateClient();
 
 
@@ -57,7 +70,7 @@ namespace ActivitiesUnitTests
 
             using var client = _factory.CreateClient();
 
-            var jsonString = "{\"name\": \"PostRequest\"}";
+            var jsonString = "{\"name\":\"string\"}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             // Act
             var response = await client.PostAsync("/api/Activities", httpContent);
@@ -66,6 +79,39 @@ namespace ActivitiesUnitTests
             response.EnsureSuccessStatusCode(); // Status Code 200-299
         }
 
+        [Fact]
+        public async Task PostActivity_Identity_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{\"id\":1,\"name\":\"string\"}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var response = await client.PostAsync("/api/Activities", httpContent);
+
+            // Assert
+            var message = await client.PostAsync("api/Activities", httpContent);
+            Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
+        }
+
+        [Fact]
+        public async Task PostActivity_WrongData_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{\"name\":2}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var response = await client.PostAsync("/api/Activities", httpContent);
+
+            // Assert
+            var message = await client.PostAsync("api/Activities", httpContent);
+            Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
+        }
+
 
     }
 }
+
