@@ -18,7 +18,6 @@ namespace ActivitiesUnitTests
 {
     public class ActivitiesControllerTests : IClassFixture<WebApplicationFactory<Startup>>
     {
-
         private readonly WebApplicationFactory<Startup> _factory;
         public ActivitiesControllerTests(WebApplicationFactory<Startup> factory)
         {
@@ -41,7 +40,6 @@ namespace ActivitiesUnitTests
         [Fact]
         public async Task GetActivity_RequestNotFound_SuccessStatusCode()
         {
-
             using var client = _factory.CreateClient();
 
             // Act
@@ -52,11 +50,18 @@ namespace ActivitiesUnitTests
         }
 
         [Fact]
-        public async Task PostActivity_InvalidKey_BadRequestStatusCode()
+        public async void Task_Delete_Post_Return_OkResult()
         {
-
             using var client = _factory.CreateClient();
 
+            var response = await client.DeleteAsync("api/Activities/3");
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+        }
+
+        [Fact]
+        public async Task PostActivity_InvalidKey_BadRequestStatusCode()
+        {
+            using var client = _factory.CreateClient();
 
             var jsonString = "{'nieistnieje':'TestPOSTAction'}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -70,7 +75,7 @@ namespace ActivitiesUnitTests
 
             using var client = _factory.CreateClient();
 
-            var jsonString = "{\"name\":\"string\"}";
+            var jsonString = "{\"name\":\"string2\"}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             // Act
             var response = await client.PostAsync("/api/Activities", httpContent);
