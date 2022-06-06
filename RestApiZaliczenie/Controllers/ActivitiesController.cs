@@ -74,6 +74,7 @@ namespace RestApiZaliczenie.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    return NoContent();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -87,7 +88,7 @@ namespace RestApiZaliczenie.Controllers
                     }
                 }
 
-                return NoContent();
+                
             }
             catch (Exception ex)
             {

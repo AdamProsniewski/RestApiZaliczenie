@@ -107,12 +107,83 @@ namespace ActivitiesUnitTests
             Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
         }
         [Fact]
+        public async void Task_Delete_WrongId()
+        {
+            using var client = _factory.CreateClient();
+
+            var response = await client.DeleteAsync("api/Activities/9999");
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
         public async void Task_Delete_Post_Return_OkResult()
         {
             using var client = _factory.CreateClient();
 
             var response = await client.DeleteAsync("api/Activities/last");
             response.EnsureSuccessStatusCode(); // Status Code 200-299
+        }
+
+
+
+
+
+        [Fact]
+        public async Task PutActivity_InvalidKey_BadRequestStatusCode()
+        {
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{'id':1,'nieIstnieje':'TestPutAction'}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var message = await client.PutAsync("api/Activities/1", httpContent);
+            Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
+        }
+
+        [Fact]
+        public async Task PutActivity_GoodRequest_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{\"id\":1,\"name\":\"string\"}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var response = await client.PutAsync("/api/Activities/1", httpContent);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+        }
+
+
+
+        [Fact]
+        public async Task PutActivity_WrongData_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{'name':2}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var message = await client.PutAsync("/api/Activities/1", httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
+        }
+
+        [Fact]
+        public async Task PutActivity_NotFound_SuccessStatusCode()
+        {
+
+            using var client = _factory.CreateClient();
+
+            var jsonString = "{\"id\":9999,\"name\":\"string\"}";
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            // Act
+            var message = await client.PutAsync("/api/Activities/9999", httpContent);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NotFound, message.StatusCode);
         }
 
     }
