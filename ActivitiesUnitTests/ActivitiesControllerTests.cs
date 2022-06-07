@@ -54,7 +54,7 @@ namespace ActivitiesUnitTests
         {
             using var client = _factory.CreateClient();
 
-            var jsonString = "{'nieistnieje':'TestPOSTAction'}";
+            var jsonString = "{\"nieistnieje\":\"TestPOSTAction\"}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             var message = await client.PostAsync("api/Activities", httpContent);
             Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
@@ -133,9 +133,9 @@ namespace ActivitiesUnitTests
         {
             using var client = _factory.CreateClient();
 
-            var jsonString = "{'id':1,'nieIstnieje':'TestPutAction'}";
+            var jsonString = "{\"id':14,\"nieIstnieje\":\"TestPutAction\"}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
-            var message = await client.PutAsync("api/Activities/1", httpContent);
+            var message = await client.PutAsync("api/Activities/14", httpContent);
             Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
         }
 
@@ -145,10 +145,10 @@ namespace ActivitiesUnitTests
 
             using var client = _factory.CreateClient();
 
-            var jsonString = "{\"id\":1,\"name\":\"string\"}";
+            var jsonString = "{\"id\":14,\"name\":\"string\"}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             // Act
-            var response = await client.PutAsync("/api/Activities/1", httpContent);
+            var response = await client.PutAsync("/api/Activities/14", httpContent);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -162,10 +162,10 @@ namespace ActivitiesUnitTests
 
             using var client = _factory.CreateClient();
 
-            var jsonString = "{'name':2}";
+            var jsonString = "{\"name\":2}";
             var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             // Act
-            var message = await client.PutAsync("/api/Activities/1", httpContent);
+            var message = await client.PutAsync("/api/Activities/14", httpContent);
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, message.StatusCode);
