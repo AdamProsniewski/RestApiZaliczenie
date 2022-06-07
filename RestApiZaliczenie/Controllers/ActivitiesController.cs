@@ -42,6 +42,21 @@ namespace RestApiZaliczenie.Controllers
             return activity;
         }
 
+        // GET: api/Activities/last
+        [HttpGet("last", Name = "GetLastActivity")]
+        public async Task<ActionResult<Activity>> GetLastActivity()
+        {
+            int max = _context.Activities.Max(p => p.Id);
+            var activity = await _context.Activities.FindAsync(max);
+
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
+            return activity;
+        }
+
         // PUT: api/Activities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -59,6 +74,7 @@ namespace RestApiZaliczenie.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    return NoContent();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -72,7 +88,7 @@ namespace RestApiZaliczenie.Controllers
                     }
                 }
 
-                return NoContent();
+                
             }
             catch (Exception ex)
             {
@@ -139,6 +155,39 @@ namespace RestApiZaliczenie.Controllers
             }
 
         }
+
+
+        // DELETE: api/Activities/5
+        [HttpDelete("last")]
+        public async Task<IActionResult> DeleteLastActivity()
+        {
+
+            try
+            {
+                int max = _context.Activities.Max(p => p.Id);
+                var activity = await _context.Activities.FindAsync(max);
+                if (activity == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Activities.Remove(activity);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+
+                return BadRequest(ex.Message);
+            }
+
+        }
+
 
         private bool ActivityExists(int id)
         {
