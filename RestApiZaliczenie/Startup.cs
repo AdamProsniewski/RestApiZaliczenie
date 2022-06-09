@@ -18,6 +18,7 @@ namespace RestApiZaliczenie
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +29,14 @@ namespace RestApiZaliczenie
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("*");
+                                  });
+            });
 
             services.AddControllers();
             services.AddDbContext<DataContext>(options =>
@@ -54,6 +63,8 @@ namespace RestApiZaliczenie
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
