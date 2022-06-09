@@ -34,7 +34,7 @@ namespace RestApiZaliczenie
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("*");
+                                      policy.WithOrigins("*").AllowAnyHeader().WithMethods("GET", "POST"); ;
                                   });
             });
 

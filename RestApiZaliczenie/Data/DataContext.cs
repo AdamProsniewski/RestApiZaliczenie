@@ -9,5 +9,6 @@ namespace RestApiZaliczenie.Data
         }
 
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<SavedActivities> SavedActivities { get; set; }
     }
 }
