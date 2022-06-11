@@ -28,6 +28,29 @@ namespace RestApiZaliczenie.Controllers
             return await _context.Activities.ToListAsync();
         }
 
+
+        [HttpGet("random")]
+        public async Task<ActionResult<Activity>> GetRandomActivity(int id)
+        {
+            int max = _context.Activities.Max(p => p.Id);
+            int min = _context.Activities.Min(p => p.Id);
+
+            Random r = new Random();
+
+            id = r.Next(min, max +1); //for ints
+
+            var activity = await _context.Activities.FindAsync(id);
+
+            if (activity == null)
+            {
+                id = r.Next(min, max + 1); //for ints
+
+                activity = await _context.Activities.FindAsync(id);
+            }
+
+            return activity;
+        }
+
         // GET: api/Activities/5
         [HttpGet("{id}", Name ="GetActivity")]
         public async Task<ActionResult<Activity>> GetActivity(int id)
