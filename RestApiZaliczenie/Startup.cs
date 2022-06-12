@@ -34,7 +34,7 @@ namespace RestApiZaliczenie
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("*").AllowAnyHeader().WithMethods("GET", "POST"); ;
+                                      policy.WithOrigins("*").AllowAnyHeader().WithMethods("GET", "POST", "DELETE"); ;
                                   });
             });
 
@@ -71,7 +71,10 @@ namespace RestApiZaliczenie
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            }); app.UseCors(
+             options => options.WithOrigins("http://example.com").AllowAnyMethod()
+         );
+
         }
     }
 }
