@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -132,10 +133,15 @@ namespace RestApiZaliczenie.Controllers
         {
             try 
             {
-                _context.Activities.Add(activity);
-                await _context.SaveChangesAsync();
+                if(activity.Name != "" && !Regex.IsMatch(activity.Name, @"^\d+$"))
+                {
+                    _context.Activities.Add(activity);
+                    await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetActivity), new { id = activity.Id }, activity);
+                    return CreatedAtAction(nameof(GetActivity), new { id = activity.Id }, activity);
+                }
+                return BadRequest();
+                
             }
             catch(Exception ex) 
             {
