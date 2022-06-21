@@ -33,23 +33,31 @@ namespace RestApiZaliczenie.Controllers
         [HttpGet("random")]
         public async Task<ActionResult<Activity>> GetRandomActivity(int id)
         {
-            int max = _context.Activities.Max(p => p.Id);
-            int min = _context.Activities.Min(p => p.Id);
+            //int max = _context.Activities.Max(p => p.Id);
+            //int min = _context.Activities.Min(p => p.Id);
 
             Random r = new Random();
 
-            id = r.Next(min, max +1); //for ints
+            int toSkip = r.Next(1, _context.Activities.Count());
 
-            var activity = await _context.Activities.FindAsync(id);
+            return _context.Activities.Skip(toSkip).Take(1).First();
 
-            if (activity == null)
-            {
-                id = r.Next(min, max + 1); //for ints
+            //id = r.Next(min, max +1);
 
-                activity = await _context.Activities.FindAsync(id);
-            }
+            //var activity = await _context.Activities.FindAsync(id);
 
-            return activity;
+            
+
+            //if (activity == null)
+            //{
+                //id = r.Next(min, max + 1);
+
+                //activity = await _context.Activities.FindAsync(id);
+
+                //activity = _context.Activities.OrderBy(s => r.NextDouble()).First();
+            //}
+
+            //return activity;
         }
 
         // GET: api/Activities/5
